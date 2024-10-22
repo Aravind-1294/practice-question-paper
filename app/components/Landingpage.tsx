@@ -1,5 +1,5 @@
 import { Metadata } from 'next'
-import LandingNavbar from "./LandingNavbar"
+import LandingNavbar from './LandingNavbar'
 
 export const metadata: Metadata = {
   title: 'Your App Name - Welcome',
@@ -11,7 +11,7 @@ const LandingPage = () => {
     <main className="min-h-screen">
       <LandingNavbar />
       <div className="container mx-auto px-4">
-        <section className="py-20">
+        <div className="py-20">
           <h1 className="text-center text-6xl font-bold text-gray-900">
             Landing Page
           </h1>
@@ -21,7 +21,7 @@ const LandingPage = () => {
           - Testimonials
           - CTA sections
           */}
-        </section>
+        </div>
       </div>
     </main>
   )
