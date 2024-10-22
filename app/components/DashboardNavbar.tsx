@@ -1,5 +1,6 @@
 'use client'
 import { BellIcon, UserCircleIcon, Cog6ToothIcon } from '@heroicons/react/24/outline'
+import Link from 'next/link'
 
 const DashboardNavbar = () => {
   return (
@@ -9,9 +10,9 @@ const DashboardNavbar = () => {
           <button className="text-gray-500 hover:text-gray-700 p-2 rounded-full hover:bg-gray-100">
             <BellIcon className="h-6 w-6" />
           </button>
-          <button className="text-gray-500 hover:text-gray-700 p-2 rounded-full hover:bg-gray-100">
+          <Link href="/settings" className="text-gray-500 hover:text-gray-700 p-2 rounded-full hover:bg-gray-100">
             <Cog6ToothIcon className="h-6 w-6" />
-          </button>
+          </Link>
           <button className="flex items-center space-x-2 text-gray-700 hover:text-gray-900 p-2 rounded-lg hover:bg-gray-100">
             <UserCircleIcon className="h-6 w-6" />
             <span>Account</span>
