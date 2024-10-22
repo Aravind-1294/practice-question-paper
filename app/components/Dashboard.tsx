@@ -13,7 +13,7 @@ export default function Dashboard({ setIsModalOpen }: DashboardProps) {
 
   return (
     <div className="pl-64">
-      <div className="space-y-6 p-6">
+      <div className="space-y-6 p-6 my-10 h-screen">
         <DashboardNavbar />
         <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} />
         <div className="flex justify-between items-center">
