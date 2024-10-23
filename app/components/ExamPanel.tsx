@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import Link from "next/link"
 
 interface ExamQuestion {
   correct_option: string
@@ -164,14 +165,14 @@ export default function ExamPanel({ examLink }: ExamPanelProps) {
 
                 <div className="space-y-6">
                   {examData.questions.map((question, index) => (
-                    <div key={index} className="bg-gray-50 rounded-lg p-6 text-left">
+                    <div key={question.question} className="bg-gray-50 rounded-lg p-6 text-left">
                       <p className="font-medium text-gray-800 mb-4">
                         {index + 1}. {question.question}
                       </p>
                       <div className="space-y-2 text-black mb-4">
                         {question.options.map((option, optIndex) => (
                           <div
-                            key={optIndex}
+                            key={option}
                             className={`p-3 rounded-lg ${
                               option.charAt(0) === question.correct_option
                                 ? 'bg-green-100 border border-green-300'
@@ -191,12 +192,12 @@ export default function ExamPanel({ examLink }: ExamPanelProps) {
                   ))}
                 </div>
 
-                <button
-                  onClick={() => window.location.href = '/'}
+                <Link href="/Dashboard"
+                  
                   className="mt-8 bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700"
                 >
                   Back to Dashboard
-                </button>
+                </Link>
               </div>
             </div>
           ) : (

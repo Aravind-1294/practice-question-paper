@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useSearchParams } from 'next/navigation'
-import { ExamData, ExamQuestions} from '../types/exam'
+import { ExamData, ExamQuestion} from '../types/exam'
 
 export default function ExamPanel() {
   const searchParams = useSearchParams()
