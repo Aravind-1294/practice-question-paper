@@ -136,7 +136,7 @@ export default function ExamPanel({ examLink }: ExamPanelProps) {
                 onClick={handleSubmit}
                 className="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700"
               >
-                Submit Exam
+                Submit the Exam
               </button>
             </div>
             <div className="mt-4 w-full bg-gray-200 rounded-full h-2">
