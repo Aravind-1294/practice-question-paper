@@ -4,7 +4,7 @@ export interface ExamResult {
   score: number;
   total_questions: number;
   created_at: string;
-  exam_data: any;
+  exam_data: unknown;
   user_answers: {
     objective: { [key: number]: string };
     descriptive: { [key: number]: string };
