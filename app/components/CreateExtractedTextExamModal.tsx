@@ -3,23 +3,32 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 
-interface CreateExamModalProps {
+interface CreateExtractedTextExamModalProps {
   isOpen: boolean
   onClose: () => void
+  extractedText: string
+  onGenerate: (payload: any) => void
+  examCount?: number
 }
 
 interface FormData {
   questionType: string
-  topics: string
   difficultyLevel: string
   numQuestions: string
 }
 
-const CreateExamModal = ({ isOpen, onClose }: CreateExamModalProps) => {
+const FREE_TIER_DAILY_LIMIT = 5;
+
+const CreateExtractedTextExamModal = ({ 
+  isOpen, 
+  onClose, 
+  extractedText,
+  onGenerate,
+  examCount = 0 
+}: CreateExtractedTextExamModalProps) => {
   const router = useRouter()
   const [formData, setFormData] = useState<FormData>({
     questionType: '',
-    topics: '',
     difficultyLevel: '',
     numQuestions: ''
   })
@@ -31,9 +40,6 @@ const CreateExamModal = ({ isOpen, onClose }: CreateExamModalProps) => {
     if (!formData.questionType) {
       newErrors.questionType = 'Question type is required'
     }
-    if (!formData.topics) {
-      newErrors.topics = 'Topics are required'
-    }
     if (!formData.difficultyLevel) {
       newErrors.difficultyLevel = 'Difficulty level is required'
     }
@@ -41,8 +47,8 @@ const CreateExamModal = ({ isOpen, onClose }: CreateExamModalProps) => {
       newErrors.numQuestions = 'Number of questions is required'
     } else {
       const num = parseInt(formData.numQuestions)
-      if (num < 5 || num > 30) {
-        newErrors.numQuestions = 'Number of questions must be between 5 and 30'
+      if (num < 5 || num > 15) {
+        newErrors.numQuestions = 'Number of questions must be between 5 and 15'
       }
     }
 
@@ -52,14 +58,19 @@ const CreateExamModal = ({ isOpen, onClose }: CreateExamModalProps) => {
 
   const handleSubmit = () => {
     if (validateForm()) {
-      // Create the exam link
-      const baseUrl = 'https://qlearning.pythonanywhere.com/get'
-      const formattedTopics = formData.topics.toLowerCase().replace(/\s+/g, '%20')
-      const examLink = `${baseUrl}/${formData.questionType.toLowerCase()}/${formattedTopics}/${formData.difficultyLevel.toLowerCase()}/${formData.numQuestions}`
+      const payload = {
+        questionType: formData.questionType,
+        difficultyLevel: formData.difficultyLevel,
+        numQuestions: parseInt(formData.numQuestions),
+        textContent: extractedText
+      }
 
-      // Navigate to the exam-created page with the link
-      router.push(`/exam-created?link=${encodeURIComponent(examLink)}`)
-      onClose()
+      try {
+        onGenerate(payload)
+        onClose()
+      } catch (error) {
+        console.error('Error generating questions:', error)
+      }
     }
   }
 
@@ -77,12 +88,46 @@ const CreateExamModal = ({ isOpen, onClose }: CreateExamModalProps) => {
     }
   }
 
+  if (examCount >= FREE_TIER_DAILY_LIMIT) {
+    const resetTime = new Date();
+    resetTime.setDate(resetTime.getDate() + 1);
+    resetTime.setHours(0, 0, 0, 0);
+    const timeUntilReset = resetTime.getTime() - new Date().getTime();
+    const hoursUntilReset = Math.floor(timeUntilReset / (1000 * 60 * 60));
+    const minutesUntilReset = Math.floor((timeUntilReset % (1000 * 60 * 60)) / (1000 * 60));
+
+    return (
+      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div className="bg-white rounded-lg p-8 w-full max-w-md">
+          <h2 className="text-2xl font-bold mb-4 text-gray-800">Daily Limit Reached</h2>
+          <p className="text-gray-600 mb-4">
+            You have reached the maximum number of exams ({FREE_TIER_DAILY_LIMIT}) allowed per day in the free tier.
+          </p>
+          <p className="text-gray-600 mb-4">
+            Your limit will reset in {hoursUntilReset}h {minutesUntilReset}m.
+          </p>
+          <div className="flex justify-end">
+            <button
+              onClick={onClose}
+              className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   if (!isOpen) return null
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white rounded-lg p-8 w-full max-w-md">
-        <h2 className="text-2xl font-bold mb-6 text-gray-800">Create New Exam</h2>
+        <h2 className="text-2xl font-bold mb-2 text-gray-800">Generate Questions from Text</h2>
+        <p className="text-gray-600 text-sm mb-6">
+          Create customized questions from your uploaded text. Select the question type, difficulty level, and number of questions you'd like to generate.
+        </p>
 
         <div className="space-y-4">
           <div>
@@ -107,24 +152,6 @@ const CreateExamModal = ({ isOpen, onClose }: CreateExamModalProps) => {
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Topics <span className="text-red-500">*</span>
-            </label>
-            <input
-              type="text"
-              name="topics"
-              value={formData.topics}
-              onChange={handleChange}
-              className="w-full border border-gray-300 rounded-md p-2 text-gray-800"
-              placeholder="Enter topics"
-              required
-            />
-            {errors.topics && (
-              <p className="text-red-500 text-sm mt-1">{errors.topics}</p>
-            )}
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
               Difficulty Level <span className="text-red-500">*</span>
             </label>
             <select
@@ -138,7 +165,7 @@ const CreateExamModal = ({ isOpen, onClose }: CreateExamModalProps) => {
               <option value="easy">Easy</option>
               <option value="medium">Medium</option>
               <option value="expert">Expert</option>
-            </select>
+              </select>
             {errors.difficultyLevel && (
               <p className="text-red-500 text-sm mt-1">{errors.difficultyLevel}</p>
             )}
@@ -155,7 +182,7 @@ const CreateExamModal = ({ isOpen, onClose }: CreateExamModalProps) => {
               onChange={handleChange}
               className="w-full border border-gray-300 rounded-md p-2 text-gray-800"
               min="5"
-              max="30"
+              max="15"
               required
             />
             {errors.numQuestions && (
@@ -175,7 +202,7 @@ const CreateExamModal = ({ isOpen, onClose }: CreateExamModalProps) => {
             onClick={handleSubmit}
             className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
           >
-            Create
+            Generate Questions
           </button>
         </div>
       </div>
@@ -183,4 +210,4 @@ const CreateExamModal = ({ isOpen, onClose }: CreateExamModalProps) => {
   )
 }
 
-export default CreateExamModal
+export default CreateExtractedTextExamModal
