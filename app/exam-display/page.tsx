@@ -30,7 +30,6 @@ export default function ExamDisplayPage() {
   const [error, setError] = useState<string>('')
   const [descriptiveAnswers, setDescriptiveAnswers] = useState<{[key: number]: string}>({})
   const { user } = useUser();
-  const [viewMode, setViewMode] = useState<'exam' | 'results'>('exam');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
@@ -96,7 +95,6 @@ export default function ExamDisplayPage() {
     // Check if we're viewing results
     const searchParams = new URLSearchParams(window.location.search);
     if (searchParams.get('view') === 'results') {
-      setViewMode('results');
       setIsSubmitted(true);
       
       // Load saved answers
@@ -302,7 +300,7 @@ export default function ExamDisplayPage() {
                     <div className="space-y-3">
                       {question.options && question.options.map((option, optionIndex) => {
                         const optionLetter = String.fromCharCode(65 + optionIndex);
-                        const correctLetter = getCorrectOptionLetter(question, question.options);
+                        const correctLetter = question.options ? getCorrectOptionLetter(question, question.options) : '';
                         const isSelected = userAnswers[questionIndex] === optionLetter;
                         const isCorrect = optionLetter === correctLetter;
                         const isWrong = isSubmitted && isSelected && !isCorrect;
