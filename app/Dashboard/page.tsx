@@ -1,5 +1,5 @@
 "use client";
-import CreateExamModal from "../components/CreateExamModal";
+import CreateExamModal from "../components/CreateGeneralExamModal";
 import Dashboard from "../components/Dashboard";
 import { useState } from "react";
 

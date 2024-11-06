@@ -1,30 +1,17 @@
-import { Metadata } from 'next'
-import LandingNavbar from './LandingNavbar'
+import Navbar from './Navbar'
+import Hero from './Hero'
+import Features from './Features'
+import HowItWorks from './HowItWorks'
+import Footer from './Footer'
 
-export const metadata: Metadata = {
-  title: 'Your App Name - Welcome',
-  description: 'Description of your app',
-}
-
-const LandingPage = () => {
+export default function LandingPage() {
   return (
-    <main className="min-h-screen">
-      <LandingNavbar />
-      <div className="container mx-auto px-4">
-        <div className="py-20">
-          <h1 className="text-center text-6xl font-bold text-gray-900">
-            Landing Page
-          </h1>
-          {/* Add more content sections like:
-          - Hero section
-          - Features
-          - Testimonials
-          - CTA sections
-          */}
-        </div>
-      </div>
-    </main>
+    <div className="min-h-screen bg-gradient-to-b from-white to-gray-50">
+      <Navbar />
+      <Hero />
+      <Features />
+      <HowItWorks />
+      <Footer />
+    </div>
   )
 }
-
-export default LandingPage
