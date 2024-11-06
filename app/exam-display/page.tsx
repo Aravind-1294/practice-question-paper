@@ -300,7 +300,7 @@ export default function ExamDisplayPage() {
                     <div className="space-y-3">
                       {question.options && question.options.map((option, optionIndex) => {
                         const optionLetter = String.fromCharCode(65 + optionIndex);
-                        const correctLetter = getCorrectOptionLetter(question, question.options);
+                        const correctLetter = question.options ? getCorrectOptionLetter(question, question.options) : '';
                         const isSelected = userAnswers[questionIndex] === optionLetter;
                         const isCorrect = optionLetter === correctLetter;
                         const isWrong = isSubmitted && isSelected && !isCorrect;

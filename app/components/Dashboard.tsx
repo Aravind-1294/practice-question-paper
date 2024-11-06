@@ -26,7 +26,7 @@ interface ExamData {
   questionType: string
   topics: string
   difficultyLevel: string
-  numQuestions: number
+  numQuestions: string
 }
 
 const supabase = createClient(
@@ -157,7 +157,11 @@ const ExamCard = ({
   );
 };
 
-export default function Dashboard() {
+interface DashboardProps {
+  // define any props here
+}
+
+export default function Dashboard(props: DashboardProps) {
   const router = useRouter()
   const [activeTab, setActiveTab] = useState('general')
   const [uploadedFile, setUploadedFile] = useState<File | null>(null)
@@ -303,12 +307,17 @@ export default function Dashboard() {
     setError('')
 
     try {
+      const payload = {
+        ...examData,
+        numQuestions: parseInt(examData.numQuestions, 10)
+      };
+
       const response = await fetch('https://web-production-d90d4.up.railway.app/api/generate-general-exam', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(examData),
+        body: JSON.stringify(payload),
       })
 
       const data = await response.json()

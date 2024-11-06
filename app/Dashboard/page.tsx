@@ -1,17 +1,12 @@
 "use client";
-import CreateExamModal from "../components/CreateGeneralExamModal";
-import Dashboard from "../components/Dashboard";
-import { useState } from "react";
+import { useState } from 'react'
+import Dashboard from '../components/Dashboard'
+import CreateExamModal from '../components/CreateGeneralExamModal'
 
 export default function DashboardPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
+
   return (
-    <>
-      <Dashboard setIsModalOpen={setIsModalOpen} />
-      <CreateExamModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-      />
-    </>
+    <Dashboard />
   );
 }
